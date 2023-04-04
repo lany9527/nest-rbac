@@ -2,41 +2,48 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Role } from './role.entity';
-import { CreateUserDto, UpdateUserDto } from './role.dto';
+import { CreateRoleDto, UpdateRoleDto } from './role.dto';
 
 @Injectable()
 export class RoleService {
   constructor(
     @InjectRepository(Role)
-    private userRepository: Repository<Role>,
+    private roleRepository: Repository<Role>,
   ) {}
 
-  async create(dto: CreateUserDto): Promise<Role> {
+  async create(dto: CreateRoleDto): Promise<Role> {
     let role = new Role();
     role = {...role, ...dto}
-    return this.userRepository.save(role);
+    return this.roleRepository.save(role);
   }
 
   async findAll(): Promise<Role[]> {
-    return this.userRepository.find();
+    return this.roleRepository.find();
   }
 
-  async findOne(id: number): Promise<Role> {
+  async findOne(id: string): Promise<Role> {
     const options = { where: { id } };
-    return this.userRepository.findOne(options);
+    return this.roleRepository.findOne(options);
   }
 
-  async update(id: number, dto: UpdateUserDto): Promise<Role> {
+  async update(id: string, dto: UpdateRoleDto): Promise<Role> {
     const options = { where: { id } };
-    let role = await this.userRepository.findOne(options);
+    let role = await this.roleRepository.findOne(options);
     if (role) {
       role = {...role, ...dto}
-      return this.userRepository.save(role);
+      return this.roleRepository.save(role);
     }
     return null;
   }
 
-  async delete(id: number): Promise<void> {
-    await this.userRepository.delete(id);
+  async delete(id: string): Promise<void> {
+    await this.roleRepository.delete(id);
+  }
+
+  async findByIds(ids: string[]): Promise<Role[]> {
+    const queryBuilder = this.roleRepository.createQueryBuilder('role');
+    queryBuilder.where('role.id IN (:...ids)', { ids });
+    const roles = await queryBuilder.getMany();
+    return roles;
   }
 }

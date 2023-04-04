@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import {UserModule} from "./user/user.module";
 import { User } from "./user/user.entity";
+import { Role } from "./role/role.entity";
 import {RoleModule} from "./role/role.module";
 
 @Module({
@@ -16,8 +17,9 @@ import {RoleModule} from "./role/role.module";
     password: 'Aa123456*',
     database: 'nestjs',
     synchronize: true,
-    entities: [User],
-  })],
+    autoLoadEntities: true,
+    // entities: [User, Role],
+  }), UserModule, RoleModule],
   controllers: [AppController],
   providers: [AppService],
 })

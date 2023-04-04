@@ -1,9 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-
+import {Column, Entity, JoinTable, ManyToMany, PrimaryColumn} from 'typeorm';
+import { v4 as uuidv4 } from 'uuid';
+import {Role} from "../role/role.entity";
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryColumn('uuid')
+  id: string;
 
   @Column()
   name: string;
@@ -13,4 +14,21 @@ export class User {
   email: string;
   @Column()
   phone: string;
+  @ManyToMany(() => Role, { cascade: true })
+  @JoinTable({
+    name: 'user_roles',
+    joinColumn: {
+      name: 'user_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'role_id',
+      referencedColumnName: 'id',
+    },
+  })
+  roles: Role[];
+
+  constructor() {
+    this.id = uuidv4();
+  }
 }
