@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto } from './user.dto';
@@ -57,7 +58,7 @@ export class UserController {
   @ApiQuery({ name: 'id', description: '用户id', required: true })
   @HttpCode(200)
   @Get('/detail')
-  async findOne(@Param('id') id: string): Promise<User> {
+  async findOne(@Query('id') id: string): Promise<User> {
     return this.userService.findOne(id);
   }
 
@@ -70,10 +71,9 @@ export class UserController {
   @HttpCode(200)
   @Put('/update')
   async update(
-    @Param('id') id: string,
     @Body() dto: UpdateUserDto,
   ): Promise<User> {
-    return this.userService.update(id, dto);
+    return this.userService.update(dto);
   }
 
   @ApiOperation({
@@ -84,7 +84,8 @@ export class UserController {
   @ApiQuery({ name: 'id', description: '用户id', required: true })
   @HttpCode(200)
   @Delete('/delete')
-  async delete(@Param('id') id: string): Promise<void> {
+  async delete(@Query('id') id: string): Promise<void> {
+    console.log('delete id', id)
     return this.userService.remove(id);
   }
 }

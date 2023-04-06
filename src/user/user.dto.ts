@@ -37,6 +37,11 @@ export class CreateUserDto {
 
 export class UpdateUserDto {
   @ApiProperty({
+    description: '用户id',
+  })
+  @IsString()
+  id: string;
+  @ApiProperty({
     description: '用户名',
   })
   @IsString()
